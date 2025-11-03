@@ -374,7 +374,7 @@ def apply_box_filtering(boxes, img_path, exclusion_zones=None, apply_area_filter
 
 
 def predict_batch_true(recognitor, detector, image_paths, recognition_batch_size=8, padding=4, 
-                      use_parallel_io=True, exclusion_zones=None, apply_filters=True, visualize=False, remove_text=False):
+                      use_parallel_io=True, exclusion_zones=None, apply_filters=True, visualize=False, text_filtering=False):
     """
     Process a batch of images for OCR with true batch processing for recognition
     """
@@ -559,7 +559,7 @@ def predict_batch_true(recognitor, detector, image_paths, recognition_batch_size
                 texts.append(batch_texts[text_idx].strip())
             text_idx += 1
             
-        results[os.path.basename(img_path)] = remove_text(texts) if remove_text else texts
+        results[os.path.basename(img_path)] = remove_text(texts) if text_filtering else texts
         print(f"Processed {os.path.basename(img_path)}: {len(texts)} text regions found")
     
     return results
@@ -595,7 +595,7 @@ def process_video_folder(recognitor, detector, video_folder_path, output_dir, ba
     exclusion_zones = getattr(process_video_folder, '_exclusion_zones', [])
     apply_filters = getattr(process_video_folder, '_apply_filters', True)
     visualize = getattr(process_video_folder, '_visualize', False)
-    remove_text = getattr(process_video_folder, '_remove_text', False)
+    text_filtering = getattr(process_video_folder, '_text_filtering', False)
     
     # Print filtering config
     if exclusion_zones or apply_filters:
@@ -618,7 +618,7 @@ def process_video_folder(recognitor, detector, video_folder_path, output_dir, ba
         predict_function = lambda rec, det, paths: predict_batch_true(
             rec, det, paths, recognition_batch_size, 4, 
             getattr(process_video_folder, '_parallel_io', False),
-            exclusion_zones, apply_filters, visualize, remove_text
+            exclusion_zones, apply_filters, visualize, text_filtering
         )
     else:
         predict_function = lambda rec, det, paths: predict_batch_sequential(
@@ -764,7 +764,7 @@ def main():
     process_video_folder._exclusion_zones = exclusion_zones
     process_video_folder._apply_filters = not args.disable_area_ratio_filters
     process_video_folder._visualize = args.visualize_filtering
-    process_video_folder._remove_text = args.text_filtering
+    process_video_folder._text_filtering = args.text_filtering
     
     # Print configuration summary
     print(f"\n🎯 Box Filtering Configuration:")
