@@ -663,8 +663,10 @@ def main():
     parser.add_argument('--exclusion_zone', default='DEFAULT', 
                        choices=['DEFAULT', 'HTV', 'NEWS', 'COMPARE', 'NEWS_60S'],
                        help='Predefined exclusion zone (default: DEFAULT = no filtering)')
-    parser.add_argument('--custom_exclusion', nargs='+', type=int, metavar=('X', 'Y', 'W', 'H'),
-                       help='Custom exclusion zones: X Y W H (can specify multiple sets of 4)')
+    parser.add_argument('--custom_exclusion', nargs='+', type=int, metavar='N',
+                       help='Custom exclusion zones in format: X Y W H [X Y W H ...]. '
+                            'Specify sets of 4 values (x, y, width, height). '
+                            'Example: --custom_exclusion 0 0 200 100 1600 0 320 200')
     parser.add_argument('--disable_area_ratio_filters', action='store_true',
                        help='Disable area and aspect ratio filtering')
     parser.add_argument('--min_area', type=int, default=100,
