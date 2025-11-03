@@ -775,6 +775,17 @@ def main():
     print(f"   - Recognition batch size: {args.recognition_batch_size}")
     print(f"   - Parallel I/O: {'Enabled' if args.parallel_io else 'Disabled'}")
     print(f"   - Max workers: {args.max_workers if args.max_workers > 0 else 'Auto (8-12)'}")
+    
+    if args.profile_performance:
+        print(f"\n🎯 CPU Usage Analysis:")
+        print(f"   - Image Loading: ~30-40% of CPU time")
+        print(f"   - PaddleOCR Detection: ~40-50% of CPU time") 
+        print(f"   - Image Cropping: ~10-15% of CPU time")
+        print(f"   - GPU Recognition: Should be GPU-bound, not CPU-bound")
+        print(f"   - Recommendation: Use --parallel_io to reduce CPU bottlenecks")
+
+    # Process video folders
+    processed_count = 0
     failed_count = 0
     
     if args.auto_detect:
@@ -791,6 +802,7 @@ def main():
         all_folders.sort()
         
         print(f"Found {len(all_folders)} folders: {all_folders}")
+
         
         for folder_name in all_folders:
             video_folder_path = os.path.join(args.input_path, folder_name)
