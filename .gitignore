@@ -7,3 +7,6 @@ colab_paddle.ipynb/
 output/
 
 .venv/
+
+__pycache__/
+*.pyc
