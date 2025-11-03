@@ -745,7 +745,7 @@ def main():
     # Store settings for process_video_folder
     process_video_folder._exclusion_zones = exclusion_zones
     process_video_folder._apply_filters = not args.disable_area_ratio_filters
-    # process_video_folder._visualize = args.visualize_filtering
+    process_video_folder._visualize = args.visualize_filtering
     
     # Print configuration summary
     print(f"\n🎯 Box Filtering Configuration:")
