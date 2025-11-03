@@ -11,7 +11,7 @@ class REMOVE_TEXTS:
 class NEWS_BOX:
     """Ticker bar dưới cùng"""
     BOX_X = 0
-    BOX_Y = 685
+    BOX_Y = 676
     BOX_W = 1280
     BOX_H = 5
 
