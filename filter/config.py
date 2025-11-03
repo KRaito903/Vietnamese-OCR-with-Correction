@@ -1,23 +1,17 @@
 # Các zone định nghĩa sẵn
 class HTV_BOX:
-    BOX_X = 0
-    BOX_Y = 0
-    BOX_W = 200
-    BOX_H = 100
+    BOX_X = 1050
+    BOX_Y = 50
+    BOX_W = 132
+    BOX_H = 60
 
 class NEWS_BOX:
     """Ticker bar dưới cùng"""
     BOX_X = 0
-    BOX_Y = 680
-    BOX_W = 1920
-    BOX_H = 400
+    BOX_Y = 645
+    BOX_W = 1280
+    BOX_H = 46
 
-class COMPARE_BOX:
-    """Logo góc trên bên phải"""
-    BOX_X = 1600
-    BOX_Y = 0
-    BOX_W = 320
-    BOX_H = 200
 
 # Dictionary các exclusion zones định nghĩa sẵn
 EXCLUSION_ZONES = {
@@ -28,13 +22,9 @@ EXCLUSION_ZONES = {
     'NEWS': [
         (NEWS_BOX.BOX_X, NEWS_BOX.BOX_Y, NEWS_BOX.BOX_W, NEWS_BOX.BOX_H),
     ],
-    'COMPARE': [
-        (COMPARE_BOX.BOX_X, COMPARE_BOX.BOX_Y, COMPARE_BOX.BOX_W, COMPARE_BOX.BOX_H),
-    ],
     'NEWS_60S': [
         (HTV_BOX.BOX_X, HTV_BOX.BOX_Y, HTV_BOX.BOX_W, HTV_BOX.BOX_H),
         (NEWS_BOX.BOX_X, NEWS_BOX.BOX_Y, NEWS_BOX.BOX_W, NEWS_BOX.BOX_H),
-        (COMPARE_BOX.BOX_X, COMPARE_BOX.BOX_Y, COMPARE_BOX.BOX_W, COMPARE_BOX.BOX_H),
     ],
 }
 
