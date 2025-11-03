@@ -86,67 +86,57 @@ def filter_boxes_by_aspect_ratio(boxes, min_ratio=0.1, max_ratio=15.0):
     return filtered
 
 
-def visualize_filtering(img_path, original_boxes, filtered_boxes, exclusion_zones):
+def visualize_filtering(img_path, original_boxes, filtered_boxes, exclusion_zones, output_path):
     """
-    Hiển thị visualization trong notebook (Kaggle) thay vì lưu file.
-
+    Tạo ảnh visualization để debug
+    
     Args:
         img_path: đường dẫn ảnh gốc
         original_boxes: boxes ban đầu từ PaddleOCR
         filtered_boxes: boxes sau khi filter
         exclusion_zones: list zones đã dùng
-    Returns:
-        img_vis: ảnh BGR đã vẽ (numpy array)
+        output_path: nơi lưu ảnh visualization
     """
-    import matplotlib.pyplot as plt
-
     img = cv2.imread(img_path)
     if img is None:
-        print(f"Cannot read image: {img_path}")
-        return None
-
+        return
+    
     img_vis = img.copy()
-
+    
     # Vẽ exclusion zones (màu đỏ, trong suốt)
     overlay = img_vis.copy()
     for x, y, w, h in exclusion_zones:
-        cv2.rectangle(overlay, (x, y), (x + w, y + h), (0, 0, 255), -1)
+        cv2.rectangle(overlay, (x, y), (x+w, y+h), (0, 0, 255), -1)
     cv2.addWeighted(overlay, 0.3, img_vis, 0.7, 0, img_vis)
-
+    
     # Vẽ viền exclusion zones
     for x, y, w, h in exclusion_zones:
-        cv2.rectangle(img_vis, (x, y), (x + w, y + h), (0, 0, 255), 3)
-        cv2.putText(img_vis, "EXCLUDED", (x + 5, y + 30),
-                    cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-
-    # Vẽ boxes đã bị loại (màu xám)
+        cv2.rectangle(img_vis, (x, y), (x+w, y+h), (0, 0, 255), 3)
+        cv2.putText(img_vis, "EXCLUDED", (x+5, y+30), 
+                   cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+    
+    # Vẽ boxes đã filter (màu xám, bị loại)
     removed_boxes = [b for b in original_boxes if b not in filtered_boxes]
     for box in removed_boxes:
         pt1 = tuple(map(int, box[0]))
         pt2 = tuple(map(int, box[1]))
         cv2.rectangle(img_vis, pt1, pt2, (128, 128, 128), 2)
+        # Vẽ dấu X
         cv2.line(img_vis, pt1, pt2, (128, 128, 128), 2)
         cv2.line(img_vis, (pt1[0], pt2[1]), (pt2[0], pt1[1]), (128, 128, 128), 2)
-
+    
     # Vẽ boxes giữ lại (màu xanh lá)
     for box in filtered_boxes:
         pt1 = tuple(map(int, box[0]))
         pt2 = tuple(map(int, box[1]))
         cv2.rectangle(img_vis, pt1, pt2, (0, 255, 0), 2)
-
+    
     # Thêm legend
-    cv2.putText(img_vis, f"Keep: {len(filtered_boxes)}", (10, 40),
-                cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0), 2)
-    cv2.putText(img_vis, f"Remove: {len(removed_boxes)}", (10, 80),
-                cv2.FONT_HERSHEY_SIMPLEX, 1.0, (128, 128, 128), 2)
-    cv2.putText(img_vis, f"Zones: {len(exclusion_zones)}", (10, 120),
-                cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2)
-
-    # Hiển thị trong notebook (Kaggle)
-    img_rgb = cv2.cvtColor(img_vis, cv2.COLOR_BGR2RGB)
-    plt.figure(figsize=(12, 8))
-    plt.imshow(img_rgb)
-    plt.axis('off')
-    plt.show()
-
-    return img_vis
+    cv2.putText(img_vis, f"Keep: {len(filtered_boxes)}", (10, 40), 
+               cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 255, 0), 3)
+    cv2.putText(img_vis, f"Remove: {len(removed_boxes)}", (10, 80), 
+               cv2.FONT_HERSHEY_SIMPLEX, 1.2, (128, 128, 128), 3)
+    cv2.putText(img_vis, f"Zones: {len(exclusion_zones)}", (10, 120), 
+               cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 0, 255), 3)
+    
+    cv2.imwrite(output_path, img_vis)

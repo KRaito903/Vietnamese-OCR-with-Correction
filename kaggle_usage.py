@@ -347,10 +347,27 @@ def apply_box_filtering(boxes, img_path, exclusion_zones=None, apply_area_filter
     if removed_count > 0:
         print(f"   ✂️  Total filtered: {removed_count}/{initial_count} boxes ({removed_count/initial_count*100:.1f}%)")
     
-    # Visualization
+    # Visualization - LƯU VÀO OUTPUT FOLDER thay vì input folder
     if visualize and original_boxes and exclusion_zones:
-        print(f"   🖼️  Saving visualization for {os.path.basename(img_path)}")
-        visualize_filtering(img_path, original_boxes, boxes, exclusion_zones)
+        try:
+            # Lấy output_dir từ stored attribute
+            output_dir = getattr(process_video_folder, '_output_dir', './kaggle_output')
+            
+            # Tạo visualization folder trong OUTPUT directory
+            vis_dir = os.path.join(output_dir, 'filter_visualizations')
+            os.makedirs(vis_dir, exist_ok=True)
+            
+            # Tạo tên file visualization
+            video_name = getattr(process_video_folder, '_current_video_name', 'unknown')
+            img_filename = os.path.basename(img_path)
+            vis_filename = f"{video_name}_{img_filename}"
+            vis_path = os.path.join(vis_dir, vis_filename)
+            
+            print(f"   🎨 Saving visualization to: {vis_path}")
+            visualize_filtering(img_path, original_boxes, boxes, exclusion_zones, vis_path)
+            
+        except Exception as e:
+            print(f"   ⚠️  Warning: Could not save visualization: {e}")
     
     return boxes
 
