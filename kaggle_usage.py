@@ -29,6 +29,7 @@ from PaddleOCR import PaddleOCR
 # Thêm imports cho filtering
 from filter.bounding_box import filter_boxes_by_zones, filter_boxes_by_area, filter_boxes_by_aspect_ratio, visualize_filtering
 from filter.config import EXCLUSION_ZONES, FILTER_PARAMS
+from filter.remove_text import remove_text
 
 class BatchPredictor(Predictor):
     """
@@ -242,7 +243,7 @@ def predict_batch_sequential(recognitor, detector, image_paths, padding=4,
                     print(f"Warning: Error processing box {i} in {img_path}: {e}")
                     continue
 
-            results[os.path.basename(img_path)] = texts
+            results[os.path.basename(img_path)] = remove_text(texts)
             print(f"✅ Processed {os.path.basename(img_path)}: {len(texts)} text regions found")
             
         except Exception as e:

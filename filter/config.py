@@ -5,12 +5,15 @@ class HTV_BOX:
     BOX_W = 132
     BOX_H = 60
 
+class REMOVE_TEXTS:
+    text = ["giay", "60 giay"]
+
 class NEWS_BOX:
     """Ticker bar dưới cùng"""
     BOX_X = 0
-    BOX_Y = 660
+    BOX_Y = 685
     BOX_W = 1280
-    BOX_H = 15
+    BOX_H = 5
 
 
 # Dictionary các exclusion zones định nghĩa sẵn

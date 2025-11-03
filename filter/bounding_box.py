@@ -100,7 +100,6 @@ def visualize_filtering(img_path, original_boxes, filtered_boxes, exclusion_zone
     img = cv2.imread(img_path)
     if img is None:
         return
-    
     img_vis = img.copy()
     
     # Vẽ exclusion zones (màu đỏ, trong suốt)
