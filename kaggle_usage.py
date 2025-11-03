@@ -243,7 +243,7 @@ def predict_batch_sequential(recognitor, detector, image_paths, padding=4,
                     print(f"Warning: Error processing box {i} in {img_path}: {e}")
                     continue
 
-            results[os.path.basename(img_path)] = remove_text(texts)
+            results[os.path.basename(img_path)] = texts
             print(f"✅ Processed {os.path.basename(img_path)}: {len(texts)} text regions found")
             
         except Exception as e:
@@ -559,8 +559,7 @@ def predict_batch_true(recognitor, detector, image_paths, recognition_batch_size
                 texts.append(batch_texts[text_idx].strip())
             text_idx += 1
             
-        results[os.path.basename(img_path)] = texts
-        print(f"✅{texts}")
+        results[os.path.basename(img_path)] = remove_text(texts)
         print(f"Processed {os.path.basename(img_path)}: {len(texts)} text regions found")
     
     return results
