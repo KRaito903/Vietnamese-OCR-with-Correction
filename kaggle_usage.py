@@ -349,11 +349,8 @@ def apply_box_filtering(boxes, img_path, exclusion_zones=None, apply_area_filter
     
     # Visualization
     if visualize and original_boxes and exclusion_zones:
-        vis_dir = os.path.join(os.path.dirname(img_path), 'filter_visualizations')
-        os.makedirs(vis_dir, exist_ok=True)
-        vis_path = os.path.join(vis_dir, f"filtered_{os.path.basename(img_path)}")
+        print(f"   🖼️  Saving visualization for {os.path.basename(img_path)}")
         visualize_filtering(img_path, original_boxes, boxes, exclusion_zones)
-        print(f"   🎨 Saved visualization: {vis_path}")
     
     return boxes
 
