@@ -4,7 +4,7 @@ from skimage.metrics import structural_similarity as ssim
 from filter.config import *
 
 # che new và htv trên ảnh
-def redact_box(image_path, x, y, w, h, color=(0, 0, 0)):
+def bbox(image_path, x, y, w, h, color=(0, 0, 0)):
     """
     Che vùng trên ảnh bằng hình chữ nhật màu (mặc định: đen)
     
@@ -86,3 +86,4 @@ def check_path_video_news(path_video_news):
         return True
     else:
         return False
+
