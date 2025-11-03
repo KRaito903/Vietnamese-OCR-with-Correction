@@ -8,9 +8,9 @@ class HTV_BOX:
 class NEWS_BOX:
     """Ticker bar dưới cùng"""
     BOX_X = 0
-    BOX_Y = 645
+    BOX_Y = 660
     BOX_W = 1280
-    BOX_H = 46
+    BOX_H = 15
 
 
 # Dictionary các exclusion zones định nghĩa sẵn

@@ -559,6 +559,7 @@ def predict_batch_true(recognitor, detector, image_paths, recognition_batch_size
             text_idx += 1
             
         results[os.path.basename(img_path)] = texts
+        print(f"✅{texts}")
         print(f"Processed {os.path.basename(img_path)}: {len(texts)} text regions found")
     
     return results
@@ -774,20 +775,6 @@ def main():
     print(f"   - Recognition batch size: {args.recognition_batch_size}")
     print(f"   - Parallel I/O: {'Enabled' if args.parallel_io else 'Disabled'}")
     print(f"   - Max workers: {args.max_workers if args.max_workers > 0 else 'Auto (8-12)'}")
-    print(f"   - Available CPU cores: {multiprocessing.cpu_count()}")
-    print(f"   - GPU memory available: ~15GB")
-    print(f"   - Performance profiling: {'Enabled' if args.profile_performance else 'Disabled'}")
-    
-    if args.profile_performance:
-        print(f"\n🎯 CPU Usage Analysis:")
-        print(f"   - Image Loading: ~30-40% of CPU time")
-        print(f"   - PaddleOCR Detection: ~40-50% of CPU time") 
-        print(f"   - Image Cropping: ~10-15% of CPU time")
-        print(f"   - GPU Recognition: Should be GPU-bound, not CPU-bound")
-        print(f"   - Recommendation: Use --parallel_io to reduce CPU bottlenecks")
-
-    # Process video folders
-    processed_count = 0
     failed_count = 0
     
     if args.auto_detect:
