@@ -1,47 +1,46 @@
-
-
-# Che cho khung HTV
+# Các zone định nghĩa sẵn
 class HTV_BOX:
-    BOX_X = 1050
-    BOX_Y = 50
-    BOX_W = 132
-    BOX_H = 60
+    BOX_X = 0
+    BOX_Y = 0
+    BOX_W = 200
+    BOX_H = 100
 
-# Che cho tin tức chạy phía dưới 
 class NEWS_BOX:
+    """Ticker bar dưới cùng"""
     BOX_X = 0
-    BOX_Y = 645
-    BOX_W = 1280
-    BOX_H = 46
+    BOX_Y = 680
+    BOX_W = 1920
+    BOX_H = 400
 
-# Dùng để kiểm tra đô lệch màu giữa 2 ảnh
 class COMPARE_BOX:
-    BOX_X = 0
-    BOX_Y = 660
-    BOX_W = 1280
-    BOX_H = 20
+    """Logo góc trên bên phải"""
+    BOX_X = 1600
+    BOX_Y = 0
+    BOX_W = 320
+    BOX_H = 200
 
-# Object chưa các video thời sự 60 giây
-class NEWS_60S_VIDEOS:
-    video_list = [
-        "K01",
-        "K02",
-        "K03",
-        "K04",
-        "K05",
-        "K06",
-        "K07",
-        "K08",
-        "K09",
-        "K10",
-        "K11",
-        "K12",
-        "K13",
-        "K14",
-        "K15",
-        "K16",
-        "K17",
-        "K18",
-        "K19",
-        "K20",  
-    ] 
+# Dictionary các exclusion zones định nghĩa sẵn
+EXCLUSION_ZONES = {
+    'DEFAULT': [],  # Không filter
+    'HTV': [
+        (HTV_BOX.BOX_X, HTV_BOX.BOX_Y, HTV_BOX.BOX_W, HTV_BOX.BOX_H),
+    ],
+    'NEWS': [
+        (NEWS_BOX.BOX_X, NEWS_BOX.BOX_Y, NEWS_BOX.BOX_W, NEWS_BOX.BOX_H),
+    ],
+    'COMPARE': [
+        (COMPARE_BOX.BOX_X, COMPARE_BOX.BOX_Y, COMPARE_BOX.BOX_W, COMPARE_BOX.BOX_H),
+    ],
+    'NEWS_60S': [
+        (HTV_BOX.BOX_X, HTV_BOX.BOX_Y, HTV_BOX.BOX_W, HTV_BOX.BOX_H),
+        (NEWS_BOX.BOX_X, NEWS_BOX.BOX_Y, NEWS_BOX.BOX_W, NEWS_BOX.BOX_H),
+    ],
+}
+
+# Thông số filter
+FILTER_PARAMS = {
+    'min_area': 100,  # Diện tích tối thiểu (pixels)
+    'max_area': 50000,  # Diện tích tối đa (pixels)
+    'min_aspect_ratio': 0.1,  # Tỷ lệ w/h tối thiểu
+    'max_aspect_ratio': 15.0,  # Tỷ lệ w/h tối đa
+}

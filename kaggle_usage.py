@@ -26,6 +26,9 @@ from vietocr.vietocr.tool.config import Cfg
 
 from PaddleOCR import PaddleOCR
 
+# Thêm imports cho filtering
+from filter.bounding_box import filter_boxes_by_zones, filter_boxes_by_area, filter_boxes_by_aspect_ratio, visualize_filtering
+from filter.config import EXCLUSION_ZONES, FILTER_PARAMS
 
 class BatchPredictor(Predictor):
     """
@@ -159,7 +162,8 @@ class BatchPredictor(Predictor):
         return results
 
 
-def predict_batch_sequential(recognitor, detector, image_paths, padding=4):
+def predict_batch_sequential(recognitor, detector, image_paths, padding=4, 
+                            exclusion_zones=None, apply_filters=True, visualize=False):
     """
     Process a batch of images for OCR (Sequential processing - original method)
     """
@@ -188,6 +192,20 @@ def predict_batch_sequential(recognitor, detector, image_paths, padding=4):
             for line in result:
                 boxes.append([[int(line[0][0]), int(line[0][1])], [int(line[2][0]), int(line[2][1])]])
             boxes = boxes[::-1]
+            
+            print(f"\n🔍 Processing {os.path.basename(img_path)}: {len(boxes)} boxes detected")
+            
+            # Apply filtering
+            if exclusion_zones or apply_filters:
+                boxes = apply_box_filtering(
+                    boxes, img_path, exclusion_zones, 
+                    apply_filters, apply_filters, visualize
+                )
+            
+            if not boxes:
+                print(f"⚠️  All boxes filtered out for {os.path.basename(img_path)}")
+                results[os.path.basename(img_path)] = []
+                continue
 
             # Add padding to boxes
             for box in boxes:
@@ -205,7 +223,6 @@ def predict_batch_sequential(recognitor, detector, image_paths, padding=4):
                     
                     # Check if cropped image has valid dimensions
                     if cropped_image.shape[0] <= 0 or cropped_image.shape[1] <= 0:
-                        print(f"Warning: Skipping box {i} in {img_path} with invalid dimensions: {cropped_image.shape}")
                         continue
                     
                     # Convert to PIL Image
@@ -213,7 +230,6 @@ def predict_batch_sequential(recognitor, detector, image_paths, padding=4):
                     
                     # Check PIL image dimensions
                     if cropped_image.size[0] <= 0 or cropped_image.size[1] <= 0:
-                        print(f"Warning: Skipping box {i} in {img_path} with invalid PIL dimensions: {cropped_image.size}")
                         continue
 
                     rec_result = recognitor.predict(cropped_image)
@@ -227,7 +243,7 @@ def predict_batch_sequential(recognitor, detector, image_paths, padding=4):
                     continue
 
             results[os.path.basename(img_path)] = texts
-            print(f"Processed {os.path.basename(img_path)}: {len(texts)} text regions found")
+            print(f"✅ Processed {os.path.basename(img_path)}: {len(texts)} text regions found")
             
         except Exception as e:
             print(f"Error processing {img_path}: {e}")
@@ -277,7 +293,73 @@ def detect_image_sequential(detector, img, img_path):
         return None, f"Error detecting {img_path}: {e}", 0
 
 
-def predict_batch_true(recognitor, detector, image_paths, recognition_batch_size=8, padding=4, use_parallel_io=True):
+def apply_box_filtering(boxes, img_path, exclusion_zones=None, apply_area_filter=True, 
+                       apply_ratio_filter=True, visualize=False):
+    """
+    Apply filtering to detected boxes
+    
+    Args:
+        boxes: List of [[x1, y1], [x2, y2]] boxes
+        img_path: Path to original image (for visualization)
+        exclusion_zones: List of (x, y, w, h) zones to exclude
+        apply_area_filter: Whether to filter by area
+        apply_ratio_filter: Whether to filter by aspect ratio
+        visualize: Whether to save visualization image
+    
+    Returns:
+        filtered_boxes: Filtered list of boxes
+    """
+    if not boxes:
+        return boxes
+    
+    original_boxes = boxes.copy() if visualize else None
+    initial_count = len(boxes)
+    
+    # 1. Filter by exclusion zones
+    if exclusion_zones and len(exclusion_zones) > 0:
+        boxes = filter_boxes_by_zones(boxes, exclusion_zones)
+        print(f"   🚫 Exclusion zones: {initial_count} → {len(boxes)} boxes")
+    
+    # 2. Filter by area
+    if apply_area_filter:
+        before_area = len(boxes)
+        boxes = filter_boxes_by_area(
+            boxes, 
+            min_area=FILTER_PARAMS['min_area'],
+            max_area=FILTER_PARAMS['max_area']
+        )
+        if before_area != len(boxes):
+            print(f"   📏 Area filter: {before_area} → {len(boxes)} boxes")
+    
+    # 3. Filter by aspect ratio
+    if apply_ratio_filter:
+        before_ratio = len(boxes)
+        boxes = filter_boxes_by_aspect_ratio(
+            boxes,
+            min_ratio=FILTER_PARAMS['min_aspect_ratio'],
+            max_ratio=FILTER_PARAMS['max_aspect_ratio']
+        )
+        if before_ratio != len(boxes):
+            print(f"   📐 Ratio filter: {before_ratio} → {len(boxes)} boxes")
+    
+    # Summary
+    removed_count = initial_count - len(boxes)
+    if removed_count > 0:
+        print(f"   ✂️  Total filtered: {removed_count}/{initial_count} boxes ({removed_count/initial_count*100:.1f}%)")
+    
+    # Visualization
+    if visualize and original_boxes and exclusion_zones:
+        vis_dir = os.path.join(os.path.dirname(img_path), 'filter_visualizations')
+        os.makedirs(vis_dir, exist_ok=True)
+        vis_path = os.path.join(vis_dir, f"filtered_{os.path.basename(img_path)}")
+        visualize_filtering(img_path, original_boxes, boxes, exclusion_zones, vis_path)
+        print(f"   🎨 Saved visualization: {vis_path}")
+    
+    return boxes
+
+
+def predict_batch_true(recognitor, detector, image_paths, recognition_batch_size=8, padding=4, 
+                      use_parallel_io=True, exclusion_zones=None, apply_filters=True, visualize=False):
     """
     Process a batch of images for OCR with true batch processing for recognition
     """
@@ -324,7 +406,7 @@ def predict_batch_true(recognitor, detector, image_paths, recognition_batch_size
             
             img, img_path = load_result
             
-            # Sequential detection to avoid segfaults
+            # Sequential detection
             boxes, detect_error, detect_time = detect_image_sequential(detector, img, img_path)
             total_detect_time += detect_time
             
@@ -334,11 +416,24 @@ def predict_batch_true(recognitor, detector, image_paths, recognition_batch_size
                 results[os.path.basename(img_path)] = []
                 continue
             
+            # Apply filtering
+            print(f"\n🔍 {os.path.basename(img_path)}: {len(boxes)} boxes detected")
+            if exclusion_zones or apply_filters:
+                boxes = apply_box_filtering(
+                    boxes, img_path, exclusion_zones,
+                    apply_filters, apply_filters, visualize
+                )
+            
+            if not boxes:
+                print(f"⚠️  All boxes filtered out for {os.path.basename(img_path)}")
+                results[os.path.basename(img_path)] = []
+                continue
+            
             batch_images.append(img)
             valid_paths.append(img_path)
             all_boxes.append(boxes)
     else:
-        # Sequential processing (safest method)
+        # Sequential processing
         for img_path in image_paths:
             # Load image
             load_result, load_error, load_time = load_image_only(img_path)
@@ -359,6 +454,19 @@ def predict_batch_true(recognitor, detector, image_paths, recognition_batch_size
             if boxes is None:
                 if detect_error:
                     print(f"Warning: {detect_error}")
+                results[os.path.basename(img_path)] = []
+                continue
+            
+            # Apply filtering
+            print(f"\n🔍 {os.path.basename(img_path)}: {len(boxes)} boxes detected")
+            if exclusion_zones or apply_filters:
+                boxes = apply_box_filtering(
+                    boxes, img_path, exclusion_zones,
+                    apply_filters, apply_filters, visualize
+                )
+            
+            if not boxes:
+                print(f"⚠️  All boxes filtered out for {os.path.basename(img_path)}")
                 results[os.path.basename(img_path)] = []
                 continue
             
@@ -385,7 +493,7 @@ def predict_batch_true(recognitor, detector, image_paths, recognition_batch_size
     for img_idx, (img, boxes) in enumerate(zip(batch_images, all_boxes)):
         for box in boxes:
             # Add padding
-            box[0][0] = max(0, box[0][0] - padding)
+            box[0][0] = max(0, box[0][0] - padding) 
             box[0][1] = max(0, box[0][1] - padding)
             box[1][0] = min(img.shape[1], box[1][0] + padding)
             box[1][1] = min(img.shape[0], box[1][1] + padding)
@@ -425,7 +533,7 @@ def predict_batch_true(recognitor, detector, image_paths, recognition_batch_size
             fallback_time = time.time() - fallback_start
             print(f"⏱️  Fallback Recognition Phase: {fallback_time:.2f}s")
     
-    # Group results back by original image
+    # Group results back to original image
     text_idx = 0
     for img_idx in range(len(valid_paths)):
         img_path = valid_paths[img_idx]
@@ -442,15 +550,18 @@ def predict_batch_true(recognitor, detector, image_paths, recognition_batch_size
     return results
 
 
-def process_video_folder(recognitor, detector, video_folder_path, output_dir, batch_size=8, use_batch_processing=False, recognition_batch_size=8):
+def process_video_folder(recognitor, detector, video_folder_path, output_dir, batch_size=8, 
+                        use_batch_processing=False, recognition_batch_size=8):
     """
     Process all images in a video folder and save results to JSON
     """
     video_name = os.path.basename(video_folder_path)
+    print(f"\n{'='*70}")
     print(f"Processing folder: {video_name}")
+    print(f"{'='*70}")
     
     # Get all image files in the folder
-    image_extensions = ['*.jpg', '*.jpeg', '*.png', '*.bmp', '*.tiff']
+    image_extensions = ['*.webp','*.jpg', '*.jpeg', '*.png', '*.bmp', '*.tiff']
     image_paths = []
     
     for ext in image_extensions:
@@ -465,14 +576,38 @@ def process_video_folder(recognitor, detector, video_folder_path, output_dir, ba
     
     print(f"Found {len(image_paths)} images in {video_name}")
     
+    # Get filtering settings
+    exclusion_zones = getattr(process_video_folder, '_exclusion_zones', [])
+    apply_filters = getattr(process_video_folder, '_apply_filters', True)
+    visualize = getattr(process_video_folder, '_visualize', False)
+    
+    # Print filtering config
+    if exclusion_zones or apply_filters:
+        print(f"\n📋 Filtering Configuration:")
+        print(f"   - Exclusion zones: {len(exclusion_zones)}")
+        if exclusion_zones:
+            for i, zone in enumerate(exclusion_zones, 1):
+                print(f"     Zone {i}: x={zone[0]}, y={zone[1]}, w={zone[2]}, h={zone[3]}")
+        print(f"   - Area filter: {'Enabled' if apply_filters else 'Disabled'}")
+        if apply_filters:
+            print(f"     Min area: {FILTER_PARAMS['min_area']} px²")
+            print(f"     Max area: {FILTER_PARAMS['max_area']} px²")
+        print(f"   - Ratio filter: {'Enabled' if apply_filters else 'Disabled'}")
+        if apply_filters:
+            print(f"     Ratio range: {FILTER_PARAMS['min_aspect_ratio']:.1f} - {FILTER_PARAMS['max_aspect_ratio']:.1f}")
+        print(f"   - Visualization: {'Enabled' if visualize else 'Disabled'}")
+    
     # Select the appropriate prediction function
     if use_batch_processing:
         predict_function = lambda rec, det, paths: predict_batch_true(
             rec, det, paths, recognition_batch_size, 4, 
-            getattr(process_video_folder, '_parallel_io', False)
+            getattr(process_video_folder, '_parallel_io', False),
+            exclusion_zones, apply_filters, visualize
         )
     else:
-        predict_function = predict_batch_sequential
+        predict_function = lambda rec, det, paths: predict_batch_sequential(
+            rec, det, paths, 4, exclusion_zones, apply_filters, visualize
+        )
     
     # Process images in batches
     all_results = {}
@@ -524,6 +659,25 @@ def main():
     parser.add_argument('--max_workers', type=int, default=0, 
                        help='Maximum parallel workers for I/O operations (0=auto, default: 8 for Kaggle)')
     
+    # Filtering arguments
+    parser.add_argument('--exclusion_zone', default='DEFAULT', 
+                       choices=['DEFAULT', 'HTV', 'NEWS', 'COMPARE', 'NEWS_60S'],
+                       help='Predefined exclusion zone (default: DEFAULT = no filtering)')
+    parser.add_argument('--custom_exclusion', nargs='+', type=int, metavar=('X', 'Y', 'W', 'H'),
+                       help='Custom exclusion zones: X Y W H (can specify multiple sets of 4)')
+    parser.add_argument('--disable_area_ratio_filters', action='store_true',
+                       help='Disable area and aspect ratio filtering')
+    parser.add_argument('--min_area', type=int, default=100,
+                       help='Minimum box area in pixels (default: 100)')
+    parser.add_argument('--max_area', type=int, default=50000,
+                       help='Maximum box area in pixels (default: 50000)')
+    parser.add_argument('--min_ratio', type=float, default=0.1,
+                       help='Minimum aspect ratio (default: 0.1)')
+    parser.add_argument('--max_ratio', type=float, default=15.0,
+                       help='Maximum aspect ratio (default: 15.0)')
+    parser.add_argument('--visualize_filtering', action='store_true',
+                       help='Save visualization images showing filtered boxes')
+    
     args = parser.parse_args()
 
     # Create output directory
@@ -566,9 +720,37 @@ def main():
     detector = PaddleOCR(use_angle_cls=False, lang="vi", use_gpu=use_gpu)
     print(f"PaddleOCR using GPU: {use_gpu}")
     
-    # Store parallel I/O settings for process_video_folder
-    process_video_folder._parallel_io = args.parallel_io
-    process_video_folder._max_workers = args.max_workers
+    # Update filter parameters
+    if not args.disable_area_ratio_filters:
+        FILTER_PARAMS['min_area'] = args.min_area
+        FILTER_PARAMS['max_area'] = args.max_area
+        FILTER_PARAMS['min_aspect_ratio'] = args.min_ratio
+        FILTER_PARAMS['max_aspect_ratio'] = args.max_ratio
+    
+    # Get exclusion zones
+    exclusion_zones = EXCLUSION_ZONES[args.exclusion_zone].copy()
+    
+    # Add custom exclusion zones
+    if args.custom_exclusion:
+        if len(args.custom_exclusion) % 4 != 0:
+            print("⚠️  Warning: custom_exclusion requires sets of 4 values (X Y W H)")
+        else:
+            for i in range(0, len(args.custom_exclusion), 4):
+                zone = tuple(args.custom_exclusion[i:i+4])
+                exclusion_zones.append(zone)
+                print(f"✅ Added custom zone: x={zone[0]}, y={zone[1]}, w={zone[2]}, h={zone[3]}")
+    
+    # Store settings for process_video_folder
+    process_video_folder._exclusion_zones = exclusion_zones
+    process_video_folder._apply_filters = not args.disable_area_ratio_filters
+    process_video_folder._visualize = args.visualize_filtering
+    
+    # Print configuration summary
+    print(f"\n🎯 Box Filtering Configuration:")
+    print(f"   Predefined zone: {args.exclusion_zone}")
+    print(f"   Total exclusion zones: {len(exclusion_zones)}")
+    print(f"   Area/ratio filtering: {'Enabled' if not args.disable_area_ratio_filters else 'Disabled'}")
+    print(f"   Visualization: {'Enabled' if args.visualize_filtering else 'Disabled'}")
     
     # Print resource utilization recommendations
     print(f"\n📊 Current batch configuration:")
