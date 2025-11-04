@@ -19,6 +19,7 @@ def remove_text(texts, texts_remove=REMOVE_TEXTS.text):
         # Tách các từ trong text
         words = text.split()
         filtered_words = []
+        print(f"Original text: {words}")
         
         for word in words:
             # Bỏ dấu và lowercase để so sánh
