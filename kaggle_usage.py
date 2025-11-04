@@ -558,8 +558,9 @@ def predict_batch_true(recognitor, detector, image_paths, recognition_batch_size
             if text_idx < len(batch_texts) and batch_texts[text_idx].strip():
                 texts.append(batch_texts[text_idx].strip())
             text_idx += 1
-            
-        results[os.path.basename(img_path)] = remove_text(texts) if text_filtering else texts
+
+        texts = remove_text(texts) if text_filtering else texts
+        results[os.path.basename(img_path)] = texts
         print(f"✅ {text_filtering}")
         print(f"Processed {os.path.basename(img_path)}: {len(texts)} text regions found")
     
