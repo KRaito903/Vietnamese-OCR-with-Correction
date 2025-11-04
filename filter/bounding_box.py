@@ -14,7 +14,6 @@ def is_box_inside_exclusion_zone(box, exclusion_zones):
     """
     if not exclusion_zones:
         return False
-    print(f"box: {box}")
     box_x1, box_y1 = box[0]
     box_x2, box_y2 = box[1]
     
