@@ -314,12 +314,12 @@ def apply_box_filtering(boxes, img_path, exclusion_zones=None, apply_area_filter
         return boxes
     
     original_boxes = boxes.copy() if visualize else None
-    initial_count = len(boxes)
+    # initial_count = len(boxes)
     
     # 1. Filter by exclusion zones
     if exclusion_zones and len(exclusion_zones) > 0:
         boxes = filter_boxes_by_zones(boxes, exclusion_zones)
-        print(f"   🚫 Exclusion zones: {initial_count} → {len(boxes)} boxes")
+        # print(f"   🚫 Exclusion zones: {initial_count} → {len(boxes)} boxes")
     
     # 2. Filter by area
     if apply_area_filter:
@@ -344,9 +344,9 @@ def apply_box_filtering(boxes, img_path, exclusion_zones=None, apply_area_filter
             print(f"   📐 Ratio filter: {before_ratio} → {len(boxes)} boxes")
     
     # Summary
-    removed_count = initial_count - len(boxes)
-    if removed_count > 0:
-        print(f"   ✂️  Total filtered: {removed_count}/{initial_count} boxes ({removed_count/initial_count*100:.1f}%)")
+    # removed_count = initial_count - len(boxes)
+    # if removed_count > 0:
+    #     print(f"   ✂️  Total filtered: {removed_count}/{initial_count} boxes ({removed_count/initial_count*100:.1f}%)")
     
     # Visualization - LƯU VÀO OUTPUT FOLDER thay vì input folder
     if visualize and original_boxes and exclusion_zones:
