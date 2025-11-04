@@ -41,6 +41,8 @@ def remove_text(texts, texts_remove=REMOVE_TEXTS.text):
                 end_word = start_word + len(rem_word) + 1
                 normalized_text = normalized_text[:start_word] + normalized_text[end_word:]
                 text = text[:start_word] + text[end_word:]
+                print(f"    - New normalized text: {normalized_text}")
+                print(f"    - New original text: {text}")
         # Chỉ thêm vào kết quả nếu không rỗng và có độ dài > 1
         if text and len(text) > 1:
             result.append(text)
