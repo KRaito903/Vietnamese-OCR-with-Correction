@@ -432,7 +432,7 @@ def predict_batch_true(recognitor, detector, image_paths, recognition_batch_size
                 continue
             
             # Apply filtering
-            print(f"\n🔍 {os.path.basename(img_path)}: {len(boxes)} boxes detected")
+            print(f"\n {os.path.basename(img_path)}: {len(boxes)} boxes detected")
             if exclusion_zones or apply_filters:
                 boxes = apply_box_filtering(
                     boxes, img_path, exclusion_zones,

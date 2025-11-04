@@ -6,7 +6,7 @@ class HTV_BOX:
     BOX_H = 60
 
 class REMOVE_TEXTS:
-    text = ["giay", "60 giay"]
+    text = ["giay"]
 
 class NEWS_BOX:
     """Ticker bar dưới cùng"""
