@@ -7,7 +7,7 @@ class HTV_BOX:
 
 # X,y 1.5
 class REMOVE_TEXTS:
-    text = ["giay", "tiep theo"]
+    text = ["giay", "tiep theo", "HTV", "HTV7", "HTV9", "tin chinh"]
 
 class NEWS_BOX:
     """Ticker bar dưới cùng"""
