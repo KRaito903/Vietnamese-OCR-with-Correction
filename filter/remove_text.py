@@ -34,9 +34,10 @@ def remove_text(texts, texts_remove=REMOVE_TEXTS.text):
         normalized_text = unidecode(text.lower())
         print(f"Original text: {text} -> Normalized: {normalized_text}")
         for rem_word in texts_remove:
-            print(f"  - Removing word: {rem_word}")
             if rem_word in normalized_text:
+                print(f"  - Removing word: {rem_word}")
                 start_word = normalized_text.find(rem_word)
+                print(f"    - Found at index: {start_word}")
                 end_word = start_word + len(rem_word) + 1
                 normalized_text = normalized_text[:start_word] + normalized_text[end_word:]
                 text = text[:start_word] + text[end_word:]
