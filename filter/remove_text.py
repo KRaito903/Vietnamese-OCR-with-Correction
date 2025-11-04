@@ -32,8 +32,8 @@ def remove_text(texts, texts_remove=REMOVE_TEXTS.text):
         # Ghép lại thành chuỗi
         filtered_text = " ".join(filtered_words).strip()
         
-        # Chỉ thêm vào kết quả nếu không rỗng
-        if filtered_text:
+        # Chỉ thêm vào kết quả nếu không rỗng và có độ dài > 1
+        if filtered_text and filtered_text.size() > 1:
             result.append(filtered_text)
     
     return result
