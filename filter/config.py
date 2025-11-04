@@ -1,9 +1,9 @@
 # Các zone định nghĩa sẵn
 class HTV_BOX:
-    BOX_X = 1722
+    BOX_X = 1600
     BOX_Y = 75
-    BOX_W = 198
-    BOX_H = 90
+    BOX_W = 190
+    BOX_H = 70
 
 # X,y 1.5
 class REMOVE_TEXTS:
