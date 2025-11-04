@@ -17,20 +17,22 @@ def remove_text(texts, texts_remove=REMOVE_TEXTS.text):
     
     for text in texts:
         # Tách các từ trong text
-        words = text.split()
-        filtered_words = []
-        print(f"Original text: {words}")
+        # words = text.split()
+        # filtered_words = []
+        # print(f"Original text: {words}")
         
-        for word in words:
-            # Bỏ dấu và lowercase để so sánh
-            normalized_word = unidecode(word.lower())
+        # for word in words:
+        #     # Bỏ dấu và lowercase để so sánh
+        #     normalized_word = unidecode(word.lower())
             
-            # Chỉ giữ lại từ nếu không nằm trong danh sách xóa
-            if normalized_word not in texts_remove:
-                filtered_words.append(word)
+        #     # Chỉ giữ lại từ nếu không nằm trong danh sách xóa
+        #     if normalized_word not in texts_remove:
+        #         filtered_words.append(word)
         
-        # Ghép lại thành chuỗi
-        filtered_text = " ".join(filtered_words).strip()
+        # # Ghép lại thành chuỗi
+        # filtered_text = " ".join(filtered_words).strip()
+        normalized_text = unidecode(text.lower())
+        filtered_text = text if all(rem_word not in normalized_text for rem_word in texts_remove) else ""
         
         # Chỉ thêm vào kết quả nếu không rỗng và có độ dài > 1
         if filtered_text and len(filtered_text) > 1:
