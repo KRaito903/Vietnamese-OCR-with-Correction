@@ -1,7 +1,7 @@
 # Các zone định nghĩa sẵn
 class HTV_BOX:
-    BOX_X = 1600
-    BOX_Y = 75
+    BOX_X = 1550
+    BOX_Y = 90
     BOX_W = 190
     BOX_H = 70
 
