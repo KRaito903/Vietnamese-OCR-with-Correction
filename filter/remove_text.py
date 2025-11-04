@@ -32,7 +32,9 @@ def remove_text(texts, texts_remove=REMOVE_TEXTS.text):
         # # Ghép lại thành chuỗi
         # filtered_text = " ".join(filtered_words).strip()
         normalized_text = unidecode(text.lower())
+        print(f"Original text: {text} -> Normalized: {normalized_text}")
         for rem_word in texts_remove:
+            print(f"  - Removing word: {rem_word}")
             if rem_word in normalized_text:
                 start_word = normalized_text.find(rem_word)
                 end_word = start_word + len(rem_word) + 1
