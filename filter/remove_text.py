@@ -32,10 +32,14 @@ def remove_text(texts, texts_remove=REMOVE_TEXTS.text):
         # # Ghép lại thành chuỗi
         # filtered_text = " ".join(filtered_words).strip()
         normalized_text = unidecode(text.lower())
-        filtered_text = text if all(rem_word not in normalized_text for rem_word in texts_remove) else ""
-        
+        for rem_word in texts_remove:
+            if rem_word in normalized_text:
+                start_word = normalized_text.find(rem_word)
+                end_word = start_word + len(rem_word) + 1
+                normalized_text = normalized_text[:start_word] + normalized_text[end_word:]
+                text = text[:start_word] + text[end_word:]
         # Chỉ thêm vào kết quả nếu không rỗng và có độ dài > 1
-        if filtered_text and len(filtered_text) > 1:
-            result.append(filtered_text)
+        if text and len(text) > 1:
+            result.append(text)
     
     return result
