@@ -322,15 +322,15 @@ def apply_box_filtering(boxes, img_path, exclusion_zones=None, apply_area_filter
         # print(f"   🚫 Exclusion zones: {initial_count} → {len(boxes)} boxes")
     
     # 2. Filter by area
-    if apply_area_filter:
-        before_area = len(boxes)
-        boxes = filter_boxes_by_area(
-            boxes, 
-            min_area=FILTER_PARAMS['min_area'],
-            max_area=FILTER_PARAMS['max_area']
-        )
-        if before_area != len(boxes):
-            print(f"   📏 Area filter: {before_area} → {len(boxes)} boxes")
+    # if apply_area_filter:
+    #     before_area = len(boxes)
+    #     boxes = filter_boxes_by_area(
+    #         boxes, 
+    #         min_area=FILTER_PARAMS['min_area'],
+    #         max_area=FILTER_PARAMS['max_area']
+    #     )
+    #     if before_area != len(boxes):
+    #         print(f"   📏 Area filter: {before_area} → {len(boxes)} boxes")
     
     # 3. Filter by aspect ratio
     if apply_ratio_filter:
