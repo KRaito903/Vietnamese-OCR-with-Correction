@@ -46,5 +46,5 @@ def remove_text(texts, texts_remove=REMOVE_TEXTS.text):
         # Chỉ thêm vào kết quả nếu không rỗng và có độ dài > 1
         if text and len(text) > 1:
             result.append(text)
-    
+    print(f"Final texts after removal: {result}")
     return result
