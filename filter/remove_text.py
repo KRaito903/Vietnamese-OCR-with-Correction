@@ -12,7 +12,6 @@ def remove_text(texts, texts_remove=REMOVE_TEXTS.text):
         list các chuỗi sau khi đã xóa và loại bỏ chuỗi rỗng
     """
     # Chuẩn hóa texts_remove (bỏ dấu và chuyển thành lowercase)
-    normalized_remove = [unidecode(text.lower()) for text in texts_remove]
     
     result = []
     
@@ -26,14 +25,14 @@ def remove_text(texts, texts_remove=REMOVE_TEXTS.text):
             normalized_word = unidecode(word.lower())
             
             # Chỉ giữ lại từ nếu không nằm trong danh sách xóa
-            if normalized_word not in normalized_remove:
+            if normalized_word not in texts_remove:
                 filtered_words.append(word)
         
         # Ghép lại thành chuỗi
         filtered_text = " ".join(filtered_words).strip()
         
         # Chỉ thêm vào kết quả nếu không rỗng và có độ dài > 1
-        if filtered_text and filtered_text.size() > 1:
+        if filtered_text and len(filtered_text) > 1:
             result.append(filtered_text)
     
     return result

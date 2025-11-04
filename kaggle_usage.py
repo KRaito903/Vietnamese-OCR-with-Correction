@@ -340,8 +340,8 @@ def apply_box_filtering(boxes, img_path, exclusion_zones=None, apply_area_filter
             min_ratio=FILTER_PARAMS['min_aspect_ratio'],
             max_ratio=FILTER_PARAMS['max_aspect_ratio']
         )
-        if before_ratio != len(boxes):
-            print(f"   📐 Ratio filter: {before_ratio} → {len(boxes)} boxes")
+        # if before_ratio != len(boxes):
+        #     print(f"   📐 Ratio filter: {before_ratio} → {len(boxes)} boxes")
     
     # Summary
     # removed_count = initial_count - len(boxes)
