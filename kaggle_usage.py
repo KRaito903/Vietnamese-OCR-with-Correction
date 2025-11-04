@@ -772,6 +772,7 @@ def main():
     print(f"   Total exclusion zones: {len(exclusion_zones)}")
     print(f"   Area/ratio filtering: {'Enabled' if not args.disable_area_ratio_filters else 'Disabled'}")
     print(f"   Visualization: {'Enabled' if args.visualize_filtering else 'Disabled'}")
+    print(f"  Text filtering: {args.text_filtering}")
     
     # Print resource utilization recommendations
     print(f"\n📊 Current batch configuration:")
