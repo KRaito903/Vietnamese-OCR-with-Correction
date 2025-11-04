@@ -1,18 +1,19 @@
 # Các zone định nghĩa sẵn
 class HTV_BOX:
-    BOX_X = 1050
-    BOX_Y = 50
-    BOX_W = 132
-    BOX_H = 60
+    BOX_X = 1722
+    BOX_Y = 75
+    BOX_W = 198
+    BOX_H = 90
 
+# X,y 1.5
 class REMOVE_TEXTS:
     text = ["giay"]
 
 class NEWS_BOX:
     """Ticker bar dưới cùng"""
     BOX_X = 0
-    BOX_Y = 676
-    BOX_W = 1280
+    BOX_Y = 1014
+    BOX_W = 1920
     BOX_H = 5
 
 
