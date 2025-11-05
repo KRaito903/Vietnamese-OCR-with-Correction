@@ -25,7 +25,7 @@ class LEFT_BOX:
 class RIGHT_BOX:
     BOX_X = 1210
     BOX_Y = 0
-    BOX_W = 120
+    BOX_W = 80
     BOX_H = 80
 
 
