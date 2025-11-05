@@ -42,7 +42,7 @@ def remove_text(texts, texts_remove=REMOVE_TEXTS.text):
                 normalized_text = normalized_text[:start_word] + normalized_text[end_word:]
                 text = text[:start_word] + text[end_word:]
         # Chỉ thêm vào kết quả nếu không rỗng và có độ dài > 1
-        if text and len(text) > 1:
+        if text and len(text) > 2:
             result.append(text)
             
     return result
