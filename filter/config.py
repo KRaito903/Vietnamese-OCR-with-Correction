@@ -7,7 +7,7 @@ class HTV_BOX:
 
 # X,y 1.5
 class REMOVE_TEXTS:
-    text = ["giay", "tiep theo", "HTV", "HTV7", "HTV9", "tin chinh","tinchinh","tieptheo","chuong trinh 60","18:30"]
+    text = ["giay", "tiep theo", "HTV", "HTV7", "HTV9", "tin chinh","tinchinh","tieptheo","chuong trinh 60","18:30","HIV"]
 
 class NEWS_BOX:
     """Ticker bar dưới cùng"""
@@ -15,6 +15,18 @@ class NEWS_BOX:
     BOX_Y = 1014
     BOX_W = 1920
     BOX_H = 5
+
+class LEFT_BOX:
+    BOX_X = 0
+    BOX_Y = 0
+    BOX_W = 300
+    BOX_H = 150
+
+class RIGHT_BOX:
+    BOX_X = 1620
+    BOX_Y = 0
+    BOX_W = 300
+    BOX_H = 150
 
 
 # Dictionary các exclusion zones định nghĩa sẵn
@@ -29,6 +41,13 @@ EXCLUSION_ZONES = {
     'NEWS_60S': [
         (HTV_BOX.BOX_X, HTV_BOX.BOX_Y, HTV_BOX.BOX_W, HTV_BOX.BOX_H),
         (NEWS_BOX.BOX_X, NEWS_BOX.BOX_Y, NEWS_BOX.BOX_W, NEWS_BOX.BOX_H),
+    ],
+    'HTV_COOKING': [
+        (LEFT_BOX.BOX_X, LEFT_BOX.BOX_Y, LEFT_BOX.BOX_W, LEFT_BOX.BOX_H),
+    ],
+    'COMPARE': [
+        (LEFT_BOX.BOX_X, LEFT_BOX.BOX_Y, LEFT_BOX.BOX_W, LEFT_BOX.BOX_H),
+        (RIGHT_BOX.BOX_X, RIGHT_BOX.BOX_Y, RIGHT_BOX.BOX_W, RIGHT_BOX.BOX_H),
     ],
 }
 
