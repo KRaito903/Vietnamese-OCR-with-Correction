@@ -23,10 +23,10 @@ class LEFT_BOX:
     BOX_H = 90
 
 class RIGHT_BOX:
-    BOX_X = 1210
+    BOX_X = 1195
     BOX_Y = 0
-    BOX_W = 80
-    BOX_H = 80
+    BOX_W = 95
+    BOX_H = 90
 
 
 # Dictionary các exclusion zones định nghĩa sẵn
