@@ -19,14 +19,14 @@ class NEWS_BOX:
 class LEFT_BOX:
     BOX_X = 0
     BOX_Y = 0
-    BOX_W = 200
-    BOX_H = 100
+    BOX_W = 180
+    BOX_H = 90
 
 class RIGHT_BOX:
-    BOX_X = 1020
+    BOX_X = 1120
     BOX_Y = 0
-    BOX_W = 200
-    BOX_H = 150
+    BOX_W = 150
+    BOX_H = 90
 
 
 # Dictionary các exclusion zones định nghĩa sẵn
