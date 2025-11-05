@@ -678,7 +678,7 @@ def main():
     
     # Filtering arguments
     parser.add_argument('--exclusion_zone', default='DEFAULT', 
-                       choices=['DEFAULT', 'HTV', 'NEWS', 'COMPARE', 'NEWS_60S', 'HTV_COOKING'],
+                       choices=['DEFAULT', 'HTV', 'NEWS', 'COMPARE', 'NEWS_60S', 'HTV_COOKING','LEFT_BOX'],
                        help='Predefined exclusion zone (default: DEFAULT = no filtering)')
     parser.add_argument('--custom_exclusion', nargs='+', type=int, metavar='N',
                        help='Custom exclusion zones in format: X Y W H [X Y W H ...]. '
