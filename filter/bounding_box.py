@@ -23,8 +23,12 @@ def is_box_inside_exclusion_zone(box, exclusion_zones):
         
         # Kiểm tra overlap (chồng lấn)
         # Nếu có bất kỳ phần nào chồng lấn thì filter
-        if not (box_x2 < zone_x or box_x1 > zone_x2 or 
-                box_y2 < zone_y or box_y1 > zone_y2):
+        # if not (box_x2 < zone_x or box_x1 > zone_x2 or 
+        #         box_y2 < zone_y or box_y1 > zone_y2):
+        #     return True
+        # Kiêm tra hoàn toàn bên trong
+        if (box_x1 >= zone_x and box_y1 >= zone_y and
+            box_x2 <= zone_x2 and box_y2 <= zone_y2):
             return True
     
     return False
