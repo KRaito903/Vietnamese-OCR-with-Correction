@@ -12,21 +12,21 @@ class REMOVE_TEXTS:
 class NEWS_BOX:
     """Ticker bar dưới cùng"""
     BOX_X = 0
-    BOX_Y = 1014
+    BOX_Y = 960
     BOX_W = 1920
-    BOX_H = 5
+    BOX_H = 80
 
 class LEFT_BOX:
     BOX_X = 0
     BOX_Y = 0
-    BOX_W = 180
-    BOX_H = 90
+    BOX_W = 255
+    BOX_H = 150
 
 class RIGHT_BOX:
-    BOX_X = 1195
+    BOX_X = 1025
     BOX_Y = 0
-    BOX_W = 95
-    BOX_H = 90
+    BOX_W = 255
+    BOX_H = 150
 
 
 # Dictionary các exclusion zones định nghĩa sẵn
