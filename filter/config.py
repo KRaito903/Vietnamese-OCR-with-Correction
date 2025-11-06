@@ -1,6 +1,6 @@
 # Các zone định nghĩa sẵn
 class HTV_BOX:
-    BOX_X = 910
+    BOX_X = 1550
     BOX_Y = 0
     BOX_W = 370
     BOX_H = 180
@@ -20,13 +20,13 @@ class LEFT_BOX:
     BOX_X = 0
     BOX_Y = 0
     BOX_W = 255
-    BOX_H = 150
+    BOX_H = 90
 
 class RIGHT_BOX:
     BOX_X = 1025
     BOX_Y = 0
     BOX_W = 255
-    BOX_H = 150
+    BOX_H = 90
 
 
 # Dictionary các exclusion zones định nghĩa sẵn
