@@ -14,13 +14,13 @@ class NEWS_BOX:
     BOX_X = 0
     BOX_Y = 975
     BOX_W = 1920
-    BOX_H = 75
+    BOX_H = 70
 
 class LEFT_BOX:
     BOX_X = 0
     BOX_Y = 0
     BOX_W = 255
-    BOX_H = 100
+    BOX_H = 110
 
 class RIGHT_BOX:
     BOX_X = 1025
