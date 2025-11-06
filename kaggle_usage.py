@@ -197,16 +197,16 @@ def predict_batch_sequential(recognitor, detector, image_paths, padding=4,
             print(f"\n🔍 Processing {os.path.basename(img_path)}: {len(boxes)} boxes detected")
             
             # # Apply filtering
-            # if exclusion_zones or apply_filters:
-            #     boxes = apply_box_filtering(
-            #         boxes, img_path, exclusion_zones, 
-            #         apply_filters, apply_filters, visualize
-            #     )
+            if exclusion_zones or apply_filters:
+                boxes = apply_box_filtering(
+                    boxes, img_path, exclusion_zones, 
+                    apply_filters, apply_filters, visualize
+                )
             
-            # if not boxes:
-            #     print(f"⚠️  All boxes filtered out for {os.path.basename(img_path)}")
-            #     results[os.path.basename(img_path)] = []
-            #     continue
+            if not boxes:
+                print(f"⚠️  All boxes filtered out for {os.path.basename(img_path)}")
+                results[os.path.basename(img_path)] = []
+                continue
 
             # Add padding to boxes
             for box in boxes:
@@ -432,17 +432,17 @@ def predict_batch_true(recognitor, detector, image_paths, recognition_batch_size
                 continue
             
             # Apply filtering
-            # print(f"\n {os.path.basename(img_path)}: {len(boxes)} boxes detected")
-            # if exclusion_zones or apply_filters:
-            #     boxes = apply_box_filtering(
-            #         boxes, img_path, exclusion_zones,
-            #         apply_filters, apply_filters, visualize
-            #     )
+            print(f"\n {os.path.basename(img_path)}: {len(boxes)} boxes detected")
+            if exclusion_zones or apply_filters:
+                boxes = apply_box_filtering(
+                    boxes, img_path, exclusion_zones,
+                    apply_filters, apply_filters, visualize
+                )
             
-            # if not boxes:
-            #     print(f"⚠️  All boxes filtered out for {os.path.basename(img_path)}")
-            #     results[os.path.basename(img_path)] = []
-            #     continue
+            if not boxes:
+                print(f"⚠️  All boxes filtered out for {os.path.basename(img_path)}")
+                results[os.path.basename(img_path)] = []
+                continue
             
             batch_images.append(img)
             valid_paths.append(img_path)
@@ -473,17 +473,17 @@ def predict_batch_true(recognitor, detector, image_paths, recognition_batch_size
                 continue
             
             # Apply filtering
-            # print(f"\n🔍 {os.path.basename(img_path)}: {len(boxes)} boxes detected")
-            # if exclusion_zones or apply_filters:
-            #     boxes = apply_box_filtering(
-            #         boxes, img_path, exclusion_zones,
-            #         apply_filters, apply_filters, visualize
-            #     )
+            print(f"\n🔍 {os.path.basename(img_path)}: {len(boxes)} boxes detected")
+            if exclusion_zones or apply_filters:
+                boxes = apply_box_filtering(
+                    boxes, img_path, exclusion_zones,
+                    apply_filters, apply_filters, visualize
+                )
             
-            # if not boxes:
-            #     print(f"⚠️  All boxes filtered out for {os.path.basename(img_path)}")
-            #     results[os.path.basename(img_path)] = []
-            #     continue
+            if not boxes:
+                print(f"⚠️  All boxes filtered out for {os.path.basename(img_path)}")
+                results[os.path.basename(img_path)] = []
+                continue
             
             batch_images.append(img)
             valid_paths.append(img_path)
