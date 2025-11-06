@@ -26,7 +26,7 @@ class RIGHT_BOX:
     BOX_X = 1025
     BOX_Y = 0
     BOX_W = 255
-    BOX_H = 120
+    BOX_H = 115
 
 
 # Dictionary các exclusion zones định nghĩa sẵn
